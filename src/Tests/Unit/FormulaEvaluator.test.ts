@@ -296,8 +296,6 @@ describe("FormulaEvaluator", () => {
     describe("when the formula A1 + A2 + 50", () => {
 
       it("returns the number", () => {
-
-
         const formula = ["A1", "+", "A2", "+", "50"];
 
         recalc.evaluate(formula);
@@ -312,7 +310,7 @@ describe("FormulaEvaluator", () => {
 
     describe("when the formula is 1 * ) ", () => {
       it("returns the number", () => {
-        const formula = ["1", "+", "+"];
+        const formula = ["1", "*", ")"];
 
         recalc.evaluate(formula);
 
