@@ -30,13 +30,34 @@ export class FormulaEvaluator {
       return;
     }
 
+     /**
+     * If the formula has only one token, there are a few possibilities:
+     * 1. The token is a number: In this case, the result of the formula is simply this number.
+     * 2. The token is a cell reference: The value of the referred cell becomes the result of this formula.
+     * 3. The token is neither a number nor a valid cell reference: This means the formula is invalid.
+     */
     if (formula.length === 1) {
-      if (this.isNumber(formula[0])) {
-        this._result = Number(formula[0]);
-      } else {
-        this._errorMessage = ErrorMessages.invalidFormula;
-      }
-      return;
+        // Check if the single token is a number
+        if (this.isNumber(formula[0])) {
+            this._result = Number(formula[0]);
+        } 
+        // Check if the single token is a cell reference
+        else if (this.isCellReference(formula[0])) {
+            // Get the value and potential error of the referred cell
+            let [value, error] = this.getCellValue(formula[0]);
+            // If there's an error in the referred cell, set the error message
+            if (error) {
+                this._errorMessage = error;
+                return;
+            }
+            // Otherwise, set the result to the value of the referred cell
+            this._result = value;
+        } 
+        // If the single token is neither a number nor a valid cell reference
+        else {
+            this._errorMessage = ErrorMessages.invalidFormula;
+        }
+        return;
     }
 
     // Stacks to hold the operands and operators encountered while parsing the formula
@@ -205,6 +226,9 @@ export class FormulaEvaluator {
    * 
    */
   getCellValue(token: TokenType): [number, string] {
+    if (!this._sheetMemory.isValidCellLabel(token)) {
+      return [0, ErrorMessages.invalidCell];
+    }
 
     let cell = this._sheetMemory.getCellByLabel(token);
     let formula = cell.getFormula();

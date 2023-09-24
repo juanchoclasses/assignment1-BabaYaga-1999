@@ -202,6 +202,7 @@ describe('DocumentHolder', () => {
 
                 const valueA2 = cellA2.value;
                 expect(valueA2).toEqual(1);
+                
             });
 
 
