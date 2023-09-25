@@ -14,7 +14,7 @@ export class FormulaEvaluator {
   constructor(memory: SheetMemory) {
     this._sheetMemory = memory;
   }
-
+  
   /**
    * The main method to evaluate a given formula represented as a list of tokens.
    *
@@ -137,17 +137,14 @@ export class FormulaEvaluator {
    * @returns {number} - The precedence of the operator.
    */
   precedence(op: string): number {
-    switch (op) {
-      case "+":
-      case "-":
-        return 1;
-      case "*":
-      case "/":
-        return 2;
-      default:
-        return 0;
-    }
-  }
+    const precedenceMap: { [key: string]: number } = {
+        "+": 1,
+        "-": 1,
+        "*": 2,
+        "/": 2
+    };
+    return precedenceMap[op] || 0;
+}
 
   /**
    * Calculate the result of applying the given operator to the given operands. 
