@@ -209,6 +209,9 @@ class SpreadSheetClient {
 
 
     public addToken(token: string): void {
+        if (token === '/') {
+            token = '%2F';
+        }
         const requestAddTokenURL = `${this._baseURL}/document/addtoken/${this._documentName}/${token}`;
         fetch(requestAddTokenURL, {
             method: 'PUT',
@@ -280,7 +283,22 @@ class SpreadSheetClient {
     }
 
     public clearFormula(): void {
-        return;
+        const requestClearFormulaURL = `${this._baseURL}/document/clear/formula/${this._documentName}`;
+        
+        fetch(requestClearFormulaURL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "userName": this._userName })
+        })
+
+        .then(response => {
+            return response.json() as Promise<DocumentTransport>;
+            }).then((document: DocumentTransport) => {
+            
+            this._updateDocument(document);
+        });
     }
 
 
